@@ -1,0 +1,65 @@
+#include <stdio.h>
+
+struct Process {
+    int id, at, bt, dt, rt, done;
+};
+
+int main() {
+    int n, t = 0, completed = 0, i, idx;
+    float U = 0;
+
+    printf("Enter number of processes: ");
+    scanf("%d", &n);
+
+    struct Process p[10];
+
+    for (i = 0; i < n; i++) {
+        p[i].id = i+1;
+
+        printf("P%d AT BT DT: ", i+1);
+        scanf("%d %d %d", &p[i].at, &p[i].bt, &p[i].dt);
+
+        p[i].rt = p[i].bt;
+        p[i].done = 0;
+
+        U += (float)p[i].bt / p[i].dt;
+    }
+
+    printf("\nCPU Utilization = %.2f\n", U);
+    if (U > 1)
+        printf("Not feasible\n");
+    else
+        printf("Feasible\n");
+
+    printf("\nExecution:\n");
+
+    while (completed < n) {
+        idx = -1;
+        int min = 9999;
+
+        for (i = 0; i < n; i++) {
+            if (p[i].at <= t && !p[i].done && p[i].dt < min) {
+                min = p[i].dt;
+                idx = i;
+            }
+        }
+
+        if (idx == -1) {
+            t++;
+            continue;
+        }
+
+        printf("Time %d -> P%d\n", t, p[idx].id);
+        p[idx].rt--;
+
+        if (p[idx].rt == 0) {
+            p[idx].done = 1;
+            completed++;
+            printf("P%d completed at %d\n", p[idx].id, t+1);
+        }
+
+        t++;
+    }
+
+    return 0;
+}
