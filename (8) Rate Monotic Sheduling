@@ -1,0 +1,44 @@
+#include <stdio.h>
+#include <math.h>
+
+int main() {
+    int n, i, j;
+    float C[10], T[10], U = 0, bound;
+
+    printf("Enter number of tasks: ");
+    scanf("%d", &n);
+
+    for (i = 0; i < n; i++) {
+        printf("Task %d Execution Time: ", i+1);
+        scanf("%f", &C[i]);
+        printf("Task %d Period: ", i+1);
+        scanf("%f", &T[i]);
+
+        U += C[i] / T[i];
+    }
+
+    bound = n * (pow(2, 1.0/n) - 1);
+
+    printf("\nCPU Utilization = %.3f", U);
+    printf("\nRMS Bound = %.3f\n", bound);
+
+    if (U <= bound)
+        printf("Schedulable using RMS\n");
+    else
+        printf("Not guaranteed schedulable\n");
+
+    // Sort by period (priority)
+    for (i = 0; i < n-1; i++) {
+        for (j = i+1; j < n; j++) {
+            if (T[i] > T[j]) {
+                float temp = T[i]; T[i] = T[j]; T[j] = temp;
+            }
+        }
+    }
+
+    printf("\nPriority Order:\n");
+    for (i = 0; i < n; i++)
+        printf("Task %d (T=%.2f)\n", i+1, T[i]);
+
+    return 0;
+}
